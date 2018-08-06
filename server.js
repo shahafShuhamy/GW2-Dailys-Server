@@ -1,3 +1,4 @@
+require('./config/config');
 const mongoose = require('./db/mongo').mongoose;
 const AnetClient = require('./AnetClient');
 const {DailyAchivement} = require('./db/models/Daily');
@@ -5,6 +6,7 @@ const utils = require('./utils');
 var scheduler = require('node-schedule');
 var express = require('express');
 var app = express();
+const port = process.env.PORT;
 
 var j = scheduler.scheduleJob('0 0 10 * * *', () => {
     getDailiesAndPutInDB();
@@ -55,6 +57,10 @@ app.get('/dailies/',(req, res) =>{
     });
 });
 
-app.listen(3000,() => {
+app.post('/inject/',(req ,res) =>{
+    getDailiesAndPutInDB();
+});
+
+app.listen(port,() => {
     console.log('listenning on port 3000');
 });
