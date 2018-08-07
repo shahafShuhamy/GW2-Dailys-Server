@@ -8,7 +8,7 @@ var express = require('express');
 var app = express();
 const port = process.env.PORT;
 
-var j = scheduler.scheduleJob('0 0 10 * * *', () => {
+var j = scheduler.scheduleJob('0 0 4 * * *', () => {
     getDailiesAndPutInDB();
 });
 
