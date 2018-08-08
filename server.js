@@ -14,7 +14,7 @@ var j = scheduler.scheduleJob('0 0 4 * * *', () => {
 
 //Saving Daily Achivements Should be at 4Am 
 //Data inserting to mongo is with UTC time zone which is 3 hours before Israel locale timezone.
-var getDailiesAndPutInDB = () =>{
+var getDailiesAndPutInDB = (callback) =>{
 AnetClient.getDailies((dailiesBefore) =>{
     var listToMongo = [];
     if(dailiesBefore){
@@ -31,8 +31,10 @@ AnetClient.getDailies((dailiesBefore) =>{
         DailyAchivement.insertMany(listToMongo,(error, docs) =>{
             if(error){
                 console.log('error saving data base list');
+                callback(false);
             }else{
                 console.log('saved Data base list');
+                callback(true);
             }
         });    
         }
@@ -58,7 +60,12 @@ app.get('/dailies/',(req, res) =>{
 });
 
 app.post('/inject/',(req ,res) =>{
-    getDailiesAndPutInDB();
+    getDailiesAndPutInDB((result) => {
+        if(result){
+            return res.send(200);
+        }
+        res.send(400);
+    });
 });
 
 app.listen(port,() => {
